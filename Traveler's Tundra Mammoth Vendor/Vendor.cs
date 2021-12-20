@@ -11,7 +11,7 @@ namespace Traveler_s_Tundra_Mammoth_Vendor
 {
     public static class VendorMount
     {
-        private static Mount _Mount = new Mount("Traveler's Tundra Mammoth");
+        private static readonly Mount _Mount = new Mount("Traveler's Tundra Mammoth");
         public static void Start()
         {
             FiniteStateMachineEvents.OnRunState += OnTownState;
@@ -26,12 +26,13 @@ namespace Traveler_s_Tundra_Mammoth_Vendor
         {
             if (string.IsNullOrWhiteSpace(state.DisplayName) ||
                 state.DisplayName != "To Town")
+            {
                 return;
+            }
 
             if (_Mount.IsKnown(out string MountName))
             {
                 cancelable.Cancel = true;
-                ReMount:
                 if (!_Mount.IsMounted())
                 {
                     Lua.LuaDoString($"CastSpellByName(\"{MountName}\");");
@@ -49,8 +50,6 @@ namespace Traveler_s_Tundra_Mammoth_Vendor
                             Tools.VendorRun();
                             Thread.Sleep(100);
                             Vendor.RepairAllItems();
-
-
                         }
                         else
                         {
@@ -60,12 +59,6 @@ namespace Traveler_s_Tundra_Mammoth_Vendor
                                 Interact.InteractGameObject(Mojodishu.FirstOrDefault().GetBaseAddress, true);
                                 Thread.Sleep(100);
                                 Tools.VendorRun();
-
-                            }
-                            else
-                            {
-                                Lua.LuaDoString($"CastSpellByName(\"{MountName}\");");
-                                goto ReMount;
                             }
                         }
                         CloseMerchant();
@@ -76,8 +69,15 @@ namespace Traveler_s_Tundra_Mammoth_Vendor
             }
         }
 
-        private static void Dismount() => Lua.LuaDoString("Dismount();");
-        private static void CloseMerchant() => Lua.LuaDoString("CloseMerchant();");
+        private static void Dismount()
+        {
+            Lua.LuaDoString("Dismount();");
+        }
+
+        private static void CloseMerchant()
+        {
+            Lua.LuaDoString("CloseMerchant();");
+        }
         #endregion
     }
 }
