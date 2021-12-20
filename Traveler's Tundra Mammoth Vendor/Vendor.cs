@@ -28,9 +28,9 @@ namespace Traveler_s_Tundra_Mammoth_Vendor
                 state.DisplayName != "To Town")
                 return;
 
-            cancelable.Cancel = true;
             if (_Mount.IsKnown(out string MountName))
             {
+                cancelable.Cancel = true;
                 ReMount:
                 if (!_Mount.IsMounted())
                 {
